@@ -21,6 +21,7 @@
     "@ckeditor/ckeditor5-angular": "^8.0.0",
     "@ckeditor/ckeditor5-inspector": "^4.1.0",
     "ckeditor5": "^43.1.0",
+    "ckeditor5-premium-features": "^43.1.0",
     "prosemirror-commands": "^1.0.0",
     "prosemirror-dropcursor": "^1.0.0",
     "prosemirror-example-setup": "^1.2.3",
