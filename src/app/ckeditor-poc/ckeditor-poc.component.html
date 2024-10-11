@@ -1,15 +1,39 @@
-<div>
-	<div class="main-container">
-		<div class="editor-container editor-container_document-editor" #editorContainerElement>
-			<div class="editor-container__menu-bar" #editorMenuBarElement></div>
-			<div class="editor-container__toolbar" #editorToolbarElement></div>
-			<div class="editor-container__editor-wrapper">
-				<div class="editor-container__editor">
-					<div #editorElement>
-						<ckeditor [editor]="Editor" [config]="config" (ready)="onReady($event)" *ngIf="isLayoutReady" [formControl]="form.controls.editor"/>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="container">
+  <div class="column editor-column">
+    <div class="main-container">
+      <div
+        class="editor-container editor-container_document-editor"
+        #editorContainerElement
+      >
+        <div class="editor-container__menu-bar" #editorMenuBarElement></div>
+        <div class="editor-container__toolbar" #editorToolbarElement></div>
+        <div class="editor-container__editor-wrapper">
+          <div class="editor-container__editor">
+            <div #editorElement>
+              <ckeditor
+                [editor]="Editor"
+                [config]="config"
+                (ready)="onReady($event)"
+                (drop)="drop($event)"
+                (dragover)="allowDrop($event)"
+                *ngIf="isLayoutReady"
+                [formControl]="form.controls.editor"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="column list-column">
+    Templates
+    <ul>
+      <li id="intro" draggable="true" (dragstart)="drag($event)">
+        {{ templateIntro.title }}
+      </li>
+      <li id="introRestricted" draggable="true" (dragstart)="drag($event)">
+        {{ templateIntroRestricted.title }}
+      </li>
+    </ul>
+  </div>
 </div>
