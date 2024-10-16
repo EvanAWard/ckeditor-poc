@@ -94,8 +94,10 @@ import {
   MultiLevelList,
   SlashCommand,
   Template,
+  TrackChanges,
+  TrackChangesData,
 } from 'ckeditor5-premium-features';
-import { CommentsIntegration } from './adapters';
+import { CommentsIntegration, TrackChangesIntegration } from './adapters';
 
 import { defaultHtmlToLoad } from './default-html-to-load';
 import { UsersInit } from './users/users-init-plugin';
@@ -160,12 +162,13 @@ export class CKEditorPOCComponent {
           '|',
           'insertTemplate',
           '|',
-          'restrictedEditing',
+          // 'restrictedEditing',
           'restrictedEditingException',
           '|',
           'undo',
           'redo',
           '|',
+          'trackChanges',
           'comment',
           'commentsArchive',
           '|',
@@ -250,7 +253,7 @@ export class CKEditorPOCComponent {
         Paragraph,
         PasteFromOffice,
         RemoveFormat,
-        RestrictedEditingMode,
+        // RestrictedEditingMode,
         SelectAll,
         SpecialCharacters,
         SpecialCharactersArrows,
@@ -288,10 +291,13 @@ export class CKEditorPOCComponent {
         // Collaboration
         Comments,
         CommentsRepository,
+        TrackChanges,
+        TrackChangesData,
 
-        // Custom adapter
+        // Custom adapters
         UsersInit,
         CommentsIntegration,
+        TrackChangesIntegration, // To use, user must turn it on in the menu bar, then make edits to the document
       ],
       fontFamily: {
         supportAllValues: true,

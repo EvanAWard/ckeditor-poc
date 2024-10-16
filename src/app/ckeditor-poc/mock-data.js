@@ -23,7 +23,7 @@ const usersMock = [
 
 const commentsMock = [
   {
-    threadId: "e1c002a22e071af8e1ccac9a241dd968c",
+    threadId: "e6b9f615ae4bbf42823260541c91af345",
     context: {
       type: "text",
       value: "",
@@ -34,7 +34,7 @@ const commentsMock = [
     archivedAt: null,
     comments: [
       {
-        commentId: "e8289da8d88e220c238cfb8d3aca1d6c7",
+        commentId: "e01c85246ca47394caf7936745df3c39a",
         content: "<p>Can we replace with the latest logo here?</p>",
         createdAt: "2024-07-11T09:25:58.387Z",
         authorId: "u1",
@@ -159,18 +159,18 @@ const commentsMock = [
 
 const suggestionsMock = [
   {
-    id: "ebf6612d98099f856db7a37e2cd942e3f",
-    type: "deletion",
-    authorId: "u2",
+    id: "ebe07055199c5f81d2f989463b799576b",
+    type: "insertion",
+    authorId: "u1",
     createdAt: "2024-07-11T09:26:47.459Z",
     hasComments: false,
     data: null,
     attributes: {},
   },
   {
-    id: "e9c83c841a9dfe3e589a498e01f9dbb8a",
-    type: "insertion",
-    authorId: "u2",
+    id: "e4e90f995609365287c68bb392e97b9d0",
+    type: "deletion",
+    authorId: "u1",
     createdAt: "2024-07-11T09:26:47.461Z",
     hasComments: false,
     data: null,
