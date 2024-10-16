@@ -4,6 +4,8 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostListener,
+  Renderer2,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -86,12 +88,17 @@ import {
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
+  Comments,
+  CommentsRepository,
   MergeFields,
   MultiLevelList,
   SlashCommand,
   Template,
 } from 'ckeditor5-premium-features';
+import { CommentsIntegration } from './adapters';
+
 import { defaultHtmlToLoad } from './default-html-to-load';
+import { UsersInit } from './users/users-init-plugin';
 
 /** trial expires October 18, 2024 */
 const LICENSE_KEY =
@@ -111,6 +118,8 @@ export class CKEditorPOCComponent {
   private editorToolbar!: ElementRef<HTMLDivElement>;
   @ViewChild('editorMenuBarElement')
   private editorMenuBar!: ElementRef<HTMLDivElement>;
+  @ViewChild('editorAnnotationsElement')
+  private editorAnnotations!: ElementRef<HTMLDivElement>;
 
   form = new FormGroup({
     editor: new FormControl(
@@ -119,11 +128,17 @@ export class CKEditorPOCComponent {
         : defaultHtmlToLoad
     ),
   });
-  constructor(private changeDetector: ChangeDetectorRef) {}
+  constructor(renderer: Renderer2, changeDetector: ChangeDetectorRef) {
+    this.renderer = renderer;
+    this.changeDetector = changeDetector;
+  }
+
+  private renderer: Renderer2;
+  private changeDetector: ChangeDetectorRef;
 
   public isLayoutReady = false;
   public Editor = DecoupledEditor;
-  editorInstance: any;
+  editorInstance: ClassicEditor | DecoupledEditor | null = null;
   public config: EditorConfig = {}; // CKEditor needs the DOM tree before calculating the configuration.
   public templateIntro = {
     title: 'Introduction',
@@ -135,6 +150,9 @@ export class CKEditorPOCComponent {
   };
   public ngAfterViewInit(): void {
     this.config = {
+      sidebar: {
+        container: this.editorAnnotations.nativeElement,
+      },
       toolbar: {
         items: [
           'insertMergeField',
@@ -147,6 +165,9 @@ export class CKEditorPOCComponent {
           '|',
           'undo',
           'redo',
+          '|',
+          'comment',
+          'commentsArchive',
           '|',
           'findAndReplace',
           '|',
@@ -229,6 +250,7 @@ export class CKEditorPOCComponent {
         Paragraph,
         PasteFromOffice,
         RemoveFormat,
+        RestrictedEditingMode,
         SelectAll,
         SpecialCharacters,
         SpecialCharactersArrows,
@@ -254,12 +276,22 @@ export class CKEditorPOCComponent {
         Essentials,
         List,
         Mention,
+
+        // Premium features
         MergeFields,
         MultiLevelList,
         SlashCommand,
         Template,
         // RestrictedEditingMode,
         StandardEditingMode,
+
+        // Collaboration
+        Comments,
+        CommentsRepository,
+
+        // Custom adapter
+        UsersInit,
+        CommentsIntegration,
       ],
       fontFamily: {
         supportAllValues: true,
@@ -415,6 +447,11 @@ export class CKEditorPOCComponent {
           },
         ],
       },
+      comments: {
+        editorConfig: {
+          extraPlugins: [Bold, Italic, Underline, List, Autoformat],
+        },
+      },
     };
     configUpdateAlert(this.config);
     this.isLayoutReady = true;
@@ -439,12 +476,6 @@ export class CKEditorPOCComponent {
 
     CKEditorInspector.attach(editor);
     console.log(editor.getData());
-    const data = editor.getData({
-      mergeFieldsData: {
-        guestName: 'Joe Doe',
-        guestAddress: '20041 satin leaf',
-      },
-    });
   }
 
   // data for drag and drop
@@ -471,11 +502,50 @@ export class CKEditorPOCComponent {
 
   drop(ev: any): void {
     ev.preventDefault();
-    const data = ev.dataTransfer.getData('dragElement');
-    const dataValue = this.fieldMap.get(data);
-    const viewFragment = this.editorInstance.data.processor.toView(dataValue);
-    const modelFragment = this.editorInstance.data.toModel(viewFragment);
-    this.editorInstance.model.insertContent(modelFragment);
+    if (this.editorInstance) {
+      const data = ev.dataTransfer.getData('dragElement');
+      const dataValue = this.fieldMap.get(data);
+      if (dataValue) {
+        const viewFragment =
+          this.editorInstance.data.processor.toView(dataValue);
+        const modelFragment = this.editorInstance.data.toModel(viewFragment);
+        this.editorInstance.model.insertContent(modelFragment);
+      } else {
+        console.error('dataValue is not available');
+      }
+    } else {
+      console.error('editorInstance is not available');
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  public refreshDisplayMode(): void {
+    if (!this.editorInstance || !this.editorAnnotations) {
+      return;
+    }
+
+    const sidebarElement = this.editorAnnotations.nativeElement.parentElement;
+    const annotationsUIs = this.editorInstance.plugins.get('AnnotationsUIs');
+
+    if (window.innerWidth < 1070) {
+      console.log('setting comments inline');
+      this.renderer.removeClass(sidebarElement, 'narrow');
+      this.renderer.addClass(sidebarElement, 'hidden');
+      // prolly need to make sure to remove the sidebar from the DOM here
+      annotationsUIs.switchTo('inline');
+    } else if (window.innerWidth < 1300) {
+      console.log('setting comments narrowSidebar');
+      this.renderer.removeClass(sidebarElement, 'hidden');
+      this.renderer.addClass(sidebarElement, 'narrow');
+      annotationsUIs.switchTo('narrowSidebar');
+      // prolly need to make sure to have the proper sidebar class in teh scss to have the right size here
+    } else {
+      console.log('setting comments wideSidebar');
+      this.renderer.removeClass(sidebarElement, 'hidden');
+      this.renderer.removeClass(sidebarElement, 'narrow');
+      annotationsUIs.switchTo('wideSidebar');
+      // the default sidebar settings in scss are for this size
+    }
   }
 }
 

@@ -2,7 +2,7 @@
   <div class="column editor-column">
     <div class="main-container">
       <div
-        class="editor-container editor-container_document-editor"
+        class="editor-container editor-container_document-editor editor-container_include-annotations"
         #editorContainerElement
       >
         <div class="editor-container__menu-bar" #editorMenuBarElement></div>
@@ -21,12 +21,16 @@
               />
             </div>
           </div>
+          <div class="editor-container__sidebar">
+            Side bar for comments
+            <div #editorAnnotationsElement></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
   <div class="column list-column">
-    Templates
+    Templates for drag and drop example
     <ul>
       <li id="intro" draggable="true" (dragstart)="drag($event)">
         {{ templateIntro.title }}
