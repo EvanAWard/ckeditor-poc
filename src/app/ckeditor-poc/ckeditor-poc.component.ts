@@ -105,7 +105,7 @@ import { UsersInit } from './users/users-init-plugin';
 /** trial expires October 18, 2024 */
 const LICENSE_KEY =
   'MlVnUUovS1FXVkIxNStvdW9TYUhuQ3I5VmJZYTNCUWdvU25ScWpGbFgxTkJtUExTUzN3ZGRXK2RuNjJrVlE9PS1NakF5TkRFd01UZz0=';
-
+// example collaboration features from ckeditor5 https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/collaboration-for-angular/src/app/app.component.ts
 @Component({
   selector: 'app-ckeditor-poc',
   standalone: true,
