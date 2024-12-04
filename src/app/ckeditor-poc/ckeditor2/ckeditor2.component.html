@@ -1,1 +1,36 @@
-<ckeditor [editor]="Editor" [config]="config" [data]="editorData"></ckeditor>
+<div>
+  <div class="main-container">
+    <div
+      class="editor-container editor-container_classic-editor editor-container_include-annotations"
+      #editorContainerElement
+    >
+      <div class="editor-container__editor-wrapper">
+        <div class="editor-container__editor">
+          <div #editorElement>
+            <ckeditor
+              [editor]="Editor"
+              [config]="config"
+              [data]="editorData"
+              (ready)="onReady($event)"
+              *ngIf="isLayoutReady"
+            />
+          </div>
+        </div>
+        <div class="editor-container__sidebar">
+          <div #editorAnnotationsElement></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      See the editor data in the console
+      <button className="get-data" (click)="showEditorDataInConsole($event)">
+        Get editor data
+      </button>
+    </div>
+    <div>
+      <button class="create-policy-chunks" (click)="generateChunks()">
+        Create Policy Chunks
+      </button>
+    </div>
+  </div>
+</div>

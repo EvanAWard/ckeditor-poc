@@ -101,11 +101,12 @@ import { CommentsIntegration, TrackChangesIntegration } from './adapters';
 
 import { defaultHtmlToLoad } from './default-html-to-load';
 import { UsersInit } from './users/users-init-plugin';
-import { Ckeditor2Component } from './ckeditor2/ckeditor2.component';
+import {
+  Ckeditor2Component,
+  PolicyChunk,
+} from './ckeditor2/ckeditor2.component';
+import { configUpdateAlert, LICENSE_KEY } from './credentials';
 
-/** trial expires October 18, 2024 */
-const LICENSE_KEY =
-  'MlVnUUovS1FXVkIxNStvdW9TYUhuQ3I5VmJZYTNCUWdvU25ScWpGbFgxTkJtUExTUzN3ZGRXK2RuNjJrVlE9PS1NakF5TkRFd01UZz0=';
 // example collaboration features from ckeditor5 https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/collaboration-for-angular/src/app/app.component.ts
 @Component({
   selector: 'app-ckeditor-poc',
@@ -156,6 +157,8 @@ export class CKEditorPOCComponent {
     title: 'Introduction (Unrestricted)',
     data: `<span class="restricted-editing-exception"><h2>Introduction</h2><p>In today's fast-paced world, keeping up with the latest trends and insights is essential for both personal growth and professional development. This article aims to shed light on a topic that resonates with many, providing valuable information and actionable advice. Whether you're seeking to enhance your knowledge, improve your skills, or simply stay informed, our comprehensive analysis offers a deep dive into the subject matter, designed to empower and inspire our readers.</p></span>`,
   };
+  public addedTemplates: { key: string; text: string; userId: string }[] = [];
+
   public ngAfterViewInit(): void {
     this.config = {
       sidebar: {
@@ -530,6 +533,13 @@ export class CKEditorPOCComponent {
     }
   }
 
+  public handleChunksCreated(chunks: PolicyChunk[]): void {
+    chunks.forEach((chunk) => {
+      this.addedTemplates.push(chunk);
+      this.fieldMap.set(chunk.key, chunk.text);
+    });
+  }
+
   @HostListener('window:resize', ['$event'])
   public refreshDisplayMode(): void {
     if (!this.editorInstance || !this.editorAnnotations) {
@@ -558,49 +568,5 @@ export class CKEditorPOCComponent {
       annotationsUIs.switchTo('wideSidebar');
       // the default sidebar settings in scss are for this size
     }
-  }
-}
-
-/**
- * This function exists to remind you to update the config needed for premium features.
- * The function can be safely removed. Make sure to also remove call to this function when doing so.
- */
-function configUpdateAlert(config: any) {
-  if ((configUpdateAlert as any).configUpdateAlertShown) {
-    return;
-  }
-
-  const isModifiedByUser = (
-    currentValue: string | undefined,
-    forbiddenValue: string
-  ) => {
-    if (currentValue === forbiddenValue) {
-      return false;
-    }
-
-    if (currentValue === undefined) {
-      return false;
-    }
-
-    return true;
-  };
-
-  const valuesToUpdate = [];
-
-  (configUpdateAlert as any).configUpdateAlertShown = true;
-
-  if (!isModifiedByUser(config.licenseKey, '<YOUR_LICENSE_KEY>')) {
-    valuesToUpdate.push('LICENSE_KEY');
-  }
-
-  if (valuesToUpdate.length) {
-    window.alert(
-      [
-        'Please update the following values in your editor config',
-        'in order to receive full access to the Premium Features:',
-        '',
-        ...valuesToUpdate.map((value) => ` - ${value}`),
-      ].join('\n')
-    );
   }
 }

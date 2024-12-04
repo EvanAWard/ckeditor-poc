@@ -1,2 +1,17 @@
 @import "ckeditor5/ckeditor5.css";
 @import "ckeditor5-premium-features/ckeditor5-premium-features.css";
+
+.create-policy-chunks {
+  background-color: green;
+  color: white;
+  font-size: 20px;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.create-policy-chunks:hover {
+  background-color: darkgreen;
+}

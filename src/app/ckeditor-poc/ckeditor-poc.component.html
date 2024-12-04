@@ -38,8 +38,16 @@
       <li id="introRestricted" draggable="true" (dragstart)="drag($event)">
         {{ templateIntroRestricted.title }}
       </li>
+      <li
+        *ngFor="let template of addedTemplates"
+        [id]="template.key"
+        draggable="true"
+        (dragstart)="drag($event)"
+      >
+        {{ template.key }}
+      </li>
     </ul>
   </div>
 </div>
 <h1>Editor 2</h1>
-<app-ckeditor2></app-ckeditor2>
+<app-ckeditor2 (chunksCreated)="handleChunksCreated($event)"></app-ckeditor2>
