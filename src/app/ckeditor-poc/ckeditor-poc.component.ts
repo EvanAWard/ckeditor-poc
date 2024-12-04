@@ -101,6 +101,7 @@ import { CommentsIntegration, TrackChangesIntegration } from './adapters';
 
 import { defaultHtmlToLoad } from './default-html-to-load';
 import { UsersInit } from './users/users-init-plugin';
+import { Ckeditor2Component } from './ckeditor2/ckeditor2.component';
 
 /** trial expires October 18, 2024 */
 const LICENSE_KEY =
@@ -109,7 +110,12 @@ const LICENSE_KEY =
 @Component({
   selector: 'app-ckeditor-poc',
   standalone: true,
-  imports: [CommonModule, CKEditorModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    CKEditorModule,
+    ReactiveFormsModule,
+    Ckeditor2Component,
+  ],
   templateUrl: './ckeditor-poc.component.html',
   styleUrl: './ckeditor-poc.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
